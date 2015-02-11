@@ -11,6 +11,7 @@ app.controller('mainCtrl', function($scope, itunesService){
       columnDefs: [
         {field: 'Play', displayName: 'Play', width: '40px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><a href="{{row.getProperty(col.field)}}"><img src="http://www.icty.org/x/image/Miscellaneous/play_icon30x30.png"></a></div>'},
         {field: 'Artist', displayName: 'Artist'},
+        {field: 'Song', displayName: 'Song'},
         {field: 'Collection', displayName: 'Collection'},
         {field: 'AlbumArt', displayName: 'Album Art', width: '110px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><img src="{{row.getProperty(col.field)}}"></div>'},
         {field: 'Type', displayName: 'Type'},
@@ -20,9 +21,27 @@ app.controller('mainCtrl', function($scope, itunesService){
 
   //Our controller is what's going to connect our 'heavy lifting' itunesService with our view (index.html) so our user can see the results they get back from itunes.
 
-  //First inject itunesService into your controller.
 
-    //code here
+
+
+  //First inject itunesService into your controller.
+  $scope.getSongData = function(){
+    itunesService.getArtists($scope.artist).then(function(songs){
+      var cleanedSongs = [];
+      for(var i = 0; i < songs.length; i++) {
+        console.log(songs[i]);
+        cleanedSongs.push({
+          Artist: songs[i].artistName,
+          Collection: songs[i].collectionName,
+          AlbumArt: songs[i].artworkUrl30,
+          Type: songs[i].primaryGenreName,
+          Song: songs[i].trackName,
+          CollectionPrice: songs[i].collectionPrice,
+        });     
+      }
+      $scope.songData = cleanedSongs;
+    });
+  };
 
 
   //Now write a function that will call the method on the itunesService that is responsible for getting the data from iTunes, whenever the user clicks the submit button
